@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Container from '../components/layout/Container';
 import HeadingWithLogo from '../components/typography/HeadingWithLogo';
@@ -8,6 +8,8 @@ import { Label } from '../components/forms/Label';
 import { Input } from '../components/forms/Input';
 import { Form } from '../components/forms/Form';
 import RelativeWrapper from '../components/layout/RelativeWrapper';
+import ShowPasswordButton from '../components/buttons/ShowPasswordButton';
+import { ErrorMessage } from '../components/forms/ErrorMessage';
 import { useAuth } from '../hooks/useAuth';
 import useScrollToTopOnPageLoad from '../hooks/useScrollToTopOnPageLoad';
 
@@ -22,7 +24,9 @@ const Register = () => {
     password: '',
     password2: '',
   });
-  const { register, loading } = useAuth();
+  const { register, loading, error, clearError } = useAuth();
+  const passwordRef = useRef(null);
+  const password2Ref = useRef(null);
 
   useScrollToTopOnPageLoad();
 
@@ -30,6 +34,7 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (error) clearError();
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -64,6 +69,8 @@ const Register = () => {
               placeholder="Enter your name"
               minLength="2"
               autoComplete="name"
+              autoFocus
+              disabled={loading}
             />
           </FormGroup>
           <FormGroup>
@@ -77,12 +84,14 @@ const Register = () => {
               required
               placeholder="Enter your email"
               autoComplete="email"
+              disabled={loading}
             />
           </FormGroup>
           <FormGroup>
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              ref={passwordRef}
               type="password"
               name="password"
               value={password}
@@ -91,12 +100,15 @@ const Register = () => {
               placeholder="Enter your password (min 6 characters)"
               minLength="6"
               autoComplete="new-password"
+              disabled={loading}
             />
+            <ShowPasswordButton passwordRef={passwordRef} />
           </FormGroup>
           <FormGroup>
             <Label htmlFor="password2">Confirm Password</Label>
             <Input
               id="password2"
+              ref={password2Ref}
               type="password"
               name="password2"
               value={password2}
@@ -105,8 +117,11 @@ const Register = () => {
               placeholder="Confirm your password"
               minLength="6"
               autoComplete="new-password"
+              disabled={loading}
             />
+            <ShowPasswordButton passwordRef={password2Ref} />
           </FormGroup>
+          {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
           <Button type="submit" primary disabled={loading}>
             {loading ? 'Registering...' : 'Register'}
           </Button>
