@@ -68,6 +68,7 @@ const Login = () => {
               autoFocus
               disabled={loading}
             />
+            {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
           </FormGroup>
           <FormGroup>
             <Label htmlFor="password">Password</Label>
@@ -86,7 +87,6 @@ const Login = () => {
             />
             <ShowPasswordButton passwordRef={passwordRef} />
           </FormGroup>
-          {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
           <Button type="submit" primary disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
           </Button>

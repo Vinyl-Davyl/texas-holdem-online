@@ -86,6 +86,7 @@ const Register = () => {
               autoComplete="email"
               disabled={loading}
             />
+            {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
           </FormGroup>
           <FormGroup>
             <Label htmlFor="password">Password</Label>
@@ -121,7 +122,6 @@ const Register = () => {
             />
             <ShowPasswordButton passwordRef={password2Ref} />
           </FormGroup>
-          {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
           <Button type="submit" primary disabled={loading}>
             {loading ? 'Registering...' : 'Register'}
           </Button>
