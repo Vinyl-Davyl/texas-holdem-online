@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Container from '../components/layout/Container';
 import HeadingWithLogo from '../components/typography/HeadingWithLogo';
@@ -8,6 +8,8 @@ import { Label } from '../components/forms/Label';
 import { Input } from '../components/forms/Input';
 import { Form } from '../components/forms/Form';
 import RelativeWrapper from '../components/layout/RelativeWrapper';
+import ShowPasswordButton from '../components/buttons/ShowPasswordButton';
+import { ErrorMessage } from '../components/forms/ErrorMessage';
 import { useAuth } from '../hooks/useAuth';
 import useScrollToTopOnPageLoad from '../hooks/useScrollToTopOnPageLoad';
 
@@ -20,7 +22,8 @@ const Login = () => {
     email: '',
     password: '',
   });
-  const { login, loading } = useAuth();
+  const { login, loading, error, clearError } = useAuth();
+  const passwordRef = useRef(null);
 
   useScrollToTopOnPageLoad();
 
@@ -28,6 +31,7 @@ const Login = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (error) clearError();
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -61,12 +65,16 @@ const Login = () => {
               required
               placeholder="Enter your email"
               autoComplete="email"
+              autoFocus
+              disabled={loading}
             />
+            {error && <ErrorMessage role="alert">{error}</ErrorMessage>}
           </FormGroup>
           <FormGroup>
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              ref={passwordRef}
               type="password"
               name="password"
               value={password}
@@ -75,7 +83,9 @@ const Login = () => {
               placeholder="Enter your password"
               minLength="6"
               autoComplete="current-password"
+              disabled={loading}
             />
+            <ShowPasswordButton passwordRef={passwordRef} />
           </FormGroup>
           <Button type="submit" primary disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
