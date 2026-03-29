@@ -188,11 +188,14 @@ export const useAuth = () => {
     navigate('/');
   }, [navigate, setUserName, setEmail, setId, setWalletAddress]);
 
+  const clearError = useCallback(() => setError(null), []);
+
   return {
     login,
     register,
     logout,
     loading,
     error,
+    clearError,
   };
 };
