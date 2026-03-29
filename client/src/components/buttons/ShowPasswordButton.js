@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import EyeIcon from '../icons/EyeIcon';
+import EyeClosedIcon from '../icons/EyeClosedIcon';
 import styled from 'styled-components';
 
 const StyledShowPasswordButton = styled.div`
@@ -15,24 +16,25 @@ const StyledShowPasswordButton = styled.div`
   }
 `;
 
-const clickHandler = (ref) => {
-  if (ref.current.type === 'password') {
-    ref.current.type = 'text';
-  } else {
-    ref.current.type = 'password';
-  }
-};
-
 const ShowPasswordButton = ({ passwordRef }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const handleClick = () => {
+    if (passwordRef.current) {
+      passwordRef.current.type = isVisible ? 'password' : 'text';
+      setIsVisible((prev) => !prev);
+    }
+  };
+
   return (
-    <StyledShowPasswordButton onClick={() => clickHandler(passwordRef)}>
-      <EyeIcon />
+    <StyledShowPasswordButton onClick={handleClick}>
+      {isVisible ? <EyeIcon /> : <EyeClosedIcon />}
     </StyledShowPasswordButton>
   );
 };
 
 ShowPasswordButton.propTypes = {
-  clickHandler: PropTypes.func,
+  passwordRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
 };
 
 export default ShowPasswordButton;
